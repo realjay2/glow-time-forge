@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { DiscordUser } from '@/types';
 
-const DISCORD_CLIENT_ID = ''; // Will be set via environment
+const DISCORD_CLIENT_ID = import.meta.env.VITE_DISCORD_CLIENT_ID;
 const REDIRECT_URI = window.location.origin + '/callback';
 const SCOPES = ['identify', 'email'];
 
@@ -23,14 +23,13 @@ export function useDiscordAuth() {
   }, []);
 
   const login = useCallback(() => {
-    const clientId = DISCORD_CLIENT_ID || localStorage.getItem('discord_client_id');
-    if (!clientId) {
-      console.error('Discord Client ID not configured');
+    if (!DISCORD_CLIENT_ID) {
+      console.error('Discord Client ID not configured. Set VITE_DISCORD_CLIENT_ID in .env');
       return;
     }
     
     const params = new URLSearchParams({
-      client_id: clientId,
+      client_id: DISCORD_CLIENT_ID,
       redirect_uri: REDIRECT_URI,
       response_type: 'token',
       scope: SCOPES.join(' '),

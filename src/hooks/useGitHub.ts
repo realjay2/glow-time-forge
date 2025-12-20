@@ -5,25 +5,21 @@ const OWNER = "realjay2";
 const REPO = "QuantV-Holder";
 const FILE_PATH = "Keys.json";
 const BRANCH = "main";
+const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
 
 export function useGitHub() {
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const getToken = (): string | null => {
-    return localStorage.getItem('github_token');
-  };
-
   const fetchKeys = useCallback(async (): Promise<KeyData[]> => {
-    const token = getToken();
-    if (!token) {
-      throw new Error('GitHub token not configured');
+    if (!GITHUB_TOKEN) {
+      throw new Error('GitHub token not configured. Set VITE_GITHUB_TOKEN in .env');
     }
 
     const response = await fetch(
       `https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}?ref=${BRANCH}`,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${GITHUB_TOKEN}`,
           Accept: 'application/vnd.github.v3+json',
         },
       }
@@ -49,9 +45,8 @@ export function useGitHub() {
   }, [fetchKeys]);
 
   const updateKeyExpiration = useCallback(async (discordId: string, hoursToAdd: number): Promise<boolean> => {
-    const token = getToken();
-    if (!token) {
-      throw new Error('GitHub token not configured');
+    if (!GITHUB_TOKEN) {
+      throw new Error('GitHub token not configured. Set VITE_GITHUB_TOKEN in .env');
     }
 
     setIsUpdating(true);
@@ -62,7 +57,7 @@ export function useGitHub() {
         `https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}?ref=${BRANCH}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${GITHUB_TOKEN}`,
             Accept: 'application/vnd.github.v3+json',
           },
         }
@@ -94,7 +89,7 @@ export function useGitHub() {
         {
           method: 'PUT',
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${GITHUB_TOKEN}`,
             Accept: 'application/vnd.github.v3+json',
             'Content-Type': 'application/json',
           },
