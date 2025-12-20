@@ -1,44 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDiscordAuth } from '@/hooks/useDiscordAuth';
 import { DiscordLoginButton } from '@/components/DiscordLoginButton';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Clock, Gift, Shield, Settings, X } from 'lucide-react';
+import { Clock, Gift, Shield } from 'lucide-react';
 
 export default function Index() {
   const navigate = useNavigate();
   const { user, isLoading, login } = useDiscordAuth();
-  const [showConfig, setShowConfig] = useState(false);
-  const [discordClientId, setDiscordClientId] = useState('');
-  const [githubToken, setGithubToken] = useState('');
-  const [isConfigured, setIsConfigured] = useState(false);
 
   useEffect(() => {
-    const storedClientId = localStorage.getItem('discord_client_id');
-    const storedToken = localStorage.getItem('github_token');
-    
-    if (storedClientId && storedToken) {
-      setIsConfigured(true);
-      setDiscordClientId(storedClientId);
-      setGithubToken(storedToken);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!isLoading && user && isConfigured) {
+    if (!isLoading && user) {
       navigate('/dashboard');
     }
-  }, [user, isLoading, navigate, isConfigured]);
-
-  const handleSaveConfig = () => {
-    if (discordClientId && githubToken) {
-      localStorage.setItem('discord_client_id', discordClientId);
-      localStorage.setItem('github_token', githubToken);
-      setIsConfigured(true);
-      setShowConfig(false);
-    }
-  };
+  }, [user, isLoading, navigate]);
 
   const features = [
     {
@@ -66,60 +40,6 @@ export default function Index() {
         <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-glow-secondary/15 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl" />
       </div>
-
-      {/* Config button */}
-      <button
-        onClick={() => setShowConfig(!showConfig)}
-        className="fixed top-4 right-4 z-50 p-2 rounded-lg bg-secondary/50 border border-border/50 text-muted-foreground hover:text-foreground transition-colors"
-      >
-        <Settings className="w-5 h-5" />
-      </button>
-
-      {/* Config Modal */}
-      {showConfig && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-          <div className="glass-card p-6 w-full max-w-md mx-4 animate-fade-in-up">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-display text-xl font-semibold">Configuration</h2>
-              <button onClick={() => setShowConfig(false)} className="text-muted-foreground hover:text-foreground">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm text-muted-foreground mb-2">
-                  Discord Client ID
-                </label>
-                <Input
-                  type="text"
-                  value={discordClientId}
-                  onChange={(e) => setDiscordClientId(e.target.value)}
-                  placeholder="Enter Discord Client ID"
-                  className="bg-secondary/50 border-border"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm text-muted-foreground mb-2">
-                  GitHub Token
-                </label>
-                <Input
-                  type="password"
-                  value={githubToken}
-                  onChange={(e) => setGithubToken(e.target.value)}
-                  placeholder="Enter GitHub Token"
-                  className="bg-secondary/50 border-border"
-                />
-              </div>
-              
-              <Button variant="glow" className="w-full" onClick={handleSaveConfig}>
-                Save Configuration
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Main content */}
       <div className="relative z-10 container mx-auto px-4 min-h-screen flex flex-col items-center justify-center">
@@ -163,17 +83,7 @@ export default function Index() {
             className="glass-card glow-border p-8 max-w-sm mx-auto opacity-0 animate-fade-in-up"
             style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}
           >
-            {!isConfigured ? (
-              <div className="text-center">
-                <p className="text-muted-foreground mb-4">
-                  Please configure your credentials first
-                </p>
-                <Button variant="outline" onClick={() => setShowConfig(true)}>
-                  <Settings className="w-4 h-4 mr-2" />
-                  Open Settings
-                </Button>
-              </div>
-            ) : isLoading ? (
+            {isLoading ? (
               <div className="text-center">
                 <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
                 <p className="text-muted-foreground">Loading...</p>
