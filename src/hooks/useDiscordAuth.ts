@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { DiscordUser } from '@/types';
 
-const DISCORD_CLIENT_ID = import.meta.env.VITE_DISCORD_CLIENT_ID;
+const DISCORD_CLIENT_ID = '1442356676689789080';
 const REDIRECT_URI = window.location.origin + '/callback';
 const SCOPES = ['identify', 'email'];
 
