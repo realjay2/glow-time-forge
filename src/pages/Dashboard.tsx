@@ -9,22 +9,23 @@ import { ProgressBar } from '@/components/ProgressBar';
 import { CooldownTimer } from '@/components/CooldownTimer';
 import { Task, KeyData } from '@/types';
 import { toast } from '@/hooks/use-toast';
-import { CheckCircle, Sparkles } from 'lucide-react';
+import { CheckCircle, Sparkles, Trophy, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const TASKS: Task[] = [
   {
     id: 'opera',
-    title: 'Download Opera Browser',
-    description: 'Visit the Opera download page and install the browser',
+    title: 'Download Opera GX',
+    description: 'Get the gaming browser with built-in ad blocker & VPN',
     icon: '🌐',
     completed: false,
-    action: 'https://www.opera.com/download',
+    action: 'https://www.opera.com/gx',
     verificationTime: 10,
   },
   {
     id: 'extension',
     title: 'Install Extension',
-    description: 'Add our browser extension to enhance your experience',
+    description: 'Add our powerful browser extension to Chrome',
     icon: '🧩',
     completed: false,
     action: 'https://chrome.google.com/webstore',
@@ -32,8 +33,8 @@ const TASKS: Task[] = [
   },
   {
     id: 'video',
-    title: 'Watch Video',
-    description: 'Watch our short introduction video',
+    title: 'Watch Tutorial',
+    description: 'Learn how to get the most out of QuantV',
     icon: '▶️',
     completed: false,
     action: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
@@ -92,15 +93,12 @@ export function Dashboard() {
     
     if (success) {
       toast({
-        title: "🎉 Time Added!",
-        description: "1 hour has been added to your key!",
+        title: "🎉 +1 Hour Added!",
+        description: "Premium time has been added to your key!",
       });
       
-      // Refresh key data
       const updatedKey = await findUserKey(user.id);
       setKeyData(updatedKey);
-      
-      // Start cooldown
       markAllTasksComplete();
     } else {
       toast({
@@ -114,7 +112,7 @@ export function Dashboard() {
   const handleTaskComplete = useCallback((taskId: string) => {
     completeTask(taskId);
     toast({
-      title: "Task Completed!",
+      title: "✅ Task Completed!",
       description: "Great job! Keep going to earn your time bonus.",
     });
   }, [completeTask]);
@@ -122,7 +120,7 @@ export function Dashboard() {
   const handleCooldownComplete = useCallback(() => {
     resetCooldown();
     toast({
-      title: "Cooldown Complete!",
+      title: "🔓 Cooldown Complete!",
       description: "You can now complete tasks again.",
     });
   }, [resetCooldown]);
@@ -136,75 +134,101 @@ export function Dashboard() {
 
   return (
     <div className="min-h-screen bg-grid relative overflow-hidden">
-      {/* Background glow effects */}
+      {/* Hero glow */}
+      <div className="hero-glow" />
+      
+      {/* Background effects */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-glow-secondary/10 rounded-full blur-3xl" />
+        <div className="floating-orb w-[500px] h-[500px] top-0 left-1/4 bg-primary/10" />
+        <div className="floating-orb w-[400px] h-[400px] bottom-0 right-1/4 bg-glow-secondary/10" style={{ animationDelay: '3s' }} />
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 py-8 max-w-4xl">
+      <div className="relative z-10 container mx-auto px-4 py-8 max-w-5xl">
         {/* Header */}
-        <div className="text-center mb-12 animate-fade-in-up">
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-gradient mb-4">
-            Task Center
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Complete all tasks to earn 1 hour of premium time
-          </p>
+        <div className="flex items-center justify-between mb-10 opacity-0 animate-fade-in-down">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/')}
+            className="gap-2 text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Button>
+          
+          <div className="text-center flex-1">
+            <h1 className="font-display text-3xl md:text-4xl font-black">
+              <span className="text-gradient">TASK CENTER</span>
+            </h1>
+          </div>
+          
+          <div className="w-20" /> {/* Spacer for alignment */}
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3">
-          {/* User Info & Key Status */}
+        <div className="grid gap-8 lg:grid-cols-3">
+          {/* Left Column - User Info */}
           <div className="lg:col-span-1 space-y-6">
-            <UserCard user={user} keyData={keyData} onLogout={handleLogout} />
-            
-            {isLoadingKey ? (
-              <div className="glass-card p-6 animate-shimmer" />
-            ) : !keyData ? (
-              <div className="glass-card p-6 text-center">
-                <p className="text-muted-foreground">No active key found</p>
-              </div>
-            ) : null}
+            <div className="opacity-0 animate-slide-in-left">
+              <UserCard user={user} keyData={keyData} onLogout={handleLogout} isLoading={isLoadingKey} />
+            </div>
           </div>
 
-          {/* Tasks Section */}
+          {/* Right Column - Tasks */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Progress */}
-            <div className="glass-card p-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+            {/* Progress Card */}
+            <div className="glass-card p-6 opacity-0 animate-slide-in-right">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-glow-secondary flex items-center justify-center">
+                  <Trophy className="w-5 h-5 text-primary-foreground" />
+                </div>
+                <div>
+                  <h2 className="font-display font-bold text-lg text-foreground">Your Progress</h2>
+                  <p className="text-muted-foreground text-sm">Complete all tasks to earn +1 hour</p>
+                </div>
+              </div>
               <ProgressBar completed={completedCount} total={tasks.length} />
             </div>
 
             {/* Cooldown Timer */}
             {isOnCooldown && cooldownEnd && (
-              <CooldownTimer endTime={cooldownEnd} onComplete={handleCooldownComplete} />
+              <div className="opacity-0 animate-scale-in" style={{ animationDelay: '0.1s' }}>
+                <CooldownTimer endTime={cooldownEnd} onComplete={handleCooldownComplete} />
+              </div>
             )}
 
-            {/* Success Message */}
+            {/* Success States */}
             {allTasksComplete && isUpdating && (
-              <div className="glass-card glow-border p-6 text-center">
-                <Sparkles className="w-8 h-8 text-primary mx-auto mb-2 animate-pulse" />
-                <p className="text-foreground font-medium">Adding time to your key...</p>
+              <div className="glass-card glow-border-intense p-8 text-center opacity-0 animate-scale-in">
+                <Sparkles className="w-12 h-12 text-primary mx-auto mb-4 animate-pulse" />
+                <p className="font-display text-xl font-bold text-foreground mb-2">Processing Reward...</p>
+                <p className="text-muted-foreground">Adding time to your key</p>
               </div>
             )}
 
             {allTasksComplete && !isUpdating && isOnCooldown && (
-              <div className="glass-card glow-border p-6 text-center">
-                <CheckCircle className="w-8 h-8 text-primary mx-auto mb-2" />
-                <p className="text-foreground font-medium">All tasks completed!</p>
-                <p className="text-muted-foreground text-sm">1 hour has been added to your key</p>
+              <div className="glass-card glow-border-intense p-8 text-center opacity-0 animate-scale-in">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-success to-glow-secondary flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="w-8 h-8 text-primary-foreground" />
+                </div>
+                <p className="font-display text-2xl font-bold text-gradient mb-2">+1 Hour Added!</p>
+                <p className="text-muted-foreground">Your premium time has been extended</p>
               </div>
             )}
 
             {/* Task Cards */}
             <div className="space-y-4">
               {tasks.map((task, index) => (
-                <TaskCard
+                <div 
                   key={task.id}
-                  task={task}
-                  onComplete={handleTaskComplete}
-                  disabled={isOnCooldown || task.completed}
-                  index={index}
-                />
+                  className="opacity-0 animate-slide-in-right"
+                  style={{ animationDelay: `${0.15 + index * 0.1}s` }}
+                >
+                  <TaskCard
+                    task={task}
+                    onComplete={handleTaskComplete}
+                    disabled={isOnCooldown || task.completed}
+                    index={index}
+                  />
+                </div>
               ))}
             </div>
           </div>

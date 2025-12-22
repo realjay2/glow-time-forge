@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDiscordAuth } from '@/hooks/useDiscordAuth';
 import { DiscordLoginButton } from '@/components/DiscordLoginButton';
-import { Clock, Gift, Shield } from 'lucide-react';
+import { Clock, Gift, Shield, Sparkles, Zap, Star } from 'lucide-react';
 
 export default function Index() {
   const navigate = useNavigate();
@@ -16,85 +16,137 @@ export default function Index() {
 
   const features = [
     {
-      icon: <Gift className="w-6 h-6" />,
+      icon: <Gift className="w-7 h-7" />,
       title: 'Earn Free Time',
-      description: 'Complete simple tasks to extend your premium access',
+      description: 'Complete quick tasks to unlock premium hours',
+      color: 'from-primary to-glow-secondary',
     },
     {
-      icon: <Clock className="w-6 h-6" />,
-      title: '1 Hour Per Session',
-      description: 'Each completion adds 1 hour to your key',
+      icon: <Zap className="w-7 h-7" />,
+      title: 'Instant Rewards',
+      description: 'Time added immediately after completion',
+      color: 'from-glow-secondary to-glow-accent',
     },
     {
-      icon: <Shield className="w-6 h-6" />,
+      icon: <Shield className="w-7 h-7" />,
       title: 'Secure & Fast',
-      description: 'Discord OAuth for secure authentication',
+      description: 'Discord OAuth for instant authentication',
+      color: 'from-glow-accent to-primary',
     },
+  ];
+
+  const stats = [
+    { value: '1hr', label: 'Per Session' },
+    { value: '30min', label: 'Cooldown' },
+    { value: '3', label: 'Tasks' },
   ];
 
   return (
     <div className="min-h-screen bg-grid relative overflow-hidden">
-      {/* Animated background elements */}
+      {/* Hero glow effect */}
+      <div className="hero-glow" />
+      
+      {/* Animated background orbs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 -left-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-glow-secondary/15 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl" />
+        <div className="floating-orb w-[500px] h-[500px] -top-48 -left-48 bg-primary/20" />
+        <div className="floating-orb w-[600px] h-[600px] -bottom-64 -right-64 bg-glow-secondary/15" style={{ animationDelay: '2s' }} />
+        <div className="floating-orb w-[400px] h-[400px] top-1/3 right-1/4 bg-glow-accent/10" style={{ animationDelay: '4s' }} />
+        
+        {/* Rotating accent ring */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-primary/10 rounded-full animate-rotate-slow" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-glow-secondary/10 rounded-full animate-rotate-slow" style={{ animationDirection: 'reverse', animationDuration: '25s' }} />
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 container mx-auto px-4 min-h-screen flex flex-col items-center justify-center">
-        <div className="max-w-2xl w-full text-center">
-          {/* Logo/Title */}
-          <div className="mb-12 animate-fade-in-up">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-primary/10 border border-primary/20 mb-6 animate-pulse-glow">
-              <Gift className="w-10 h-10 text-primary" />
+      <div className="relative z-10 container mx-auto px-4 min-h-screen flex flex-col items-center justify-center py-12">
+        <div className="max-w-4xl w-full">
+          {/* Hero Section */}
+          <div className="text-center mb-16 opacity-0 animate-fade-in-up">
+            {/* Floating badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 text-primary text-sm font-medium mb-8 animate-bounce-subtle">
+              <Sparkles className="w-4 h-4" />
+              <span>Earn Premium Time For Free</span>
             </div>
-            <h1 className="font-display text-5xl md:text-6xl font-bold text-gradient mb-4">
-              QuantV Rewards
+            
+            {/* Main title */}
+            <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight">
+              <span className="text-gradient animate-text-glow">QUANTV</span>
+              <br />
+              <span className="text-foreground">REWARDS</span>
             </h1>
-            <p className="text-muted-foreground text-lg md:text-xl max-w-md mx-auto">
-              Complete tasks to earn free premium time for your QuantV key
+            
+            <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+              Complete simple tasks and <span className="text-primary font-semibold">earn free premium time</span> for your QuantV license. 
+              No payment required — just a few clicks.
             </p>
           </div>
 
-          {/* Features */}
-          <div className="grid md:grid-cols-3 gap-4 mb-12">
+          {/* Stats Row */}
+          <div className="flex justify-center gap-4 md:gap-8 mb-12 opacity-0 animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
+            {stats.map((stat, i) => (
+              <div key={stat.label} className="text-center px-6 py-4">
+                <div className="font-display text-3xl md:text-4xl font-bold text-gradient mb-1">
+                  {stat.value}
+                </div>
+                <div className="text-muted-foreground text-sm uppercase tracking-wider font-medium">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Features Grid */}
+          <div className="grid md:grid-cols-3 gap-5 mb-14">
             {features.map((feature, index) => (
               <div
                 key={feature.title}
-                className="glass-card p-5 opacity-0 animate-fade-in-up"
-                style={{ animationDelay: `${0.2 + index * 0.1}s`, animationFillMode: 'forwards' }}
+                className="glass-card p-6 hover-lift group opacity-0 animate-fade-in-up"
+                style={{ animationDelay: `${0.25 + index * 0.1}s` }}
               >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-3 mx-auto">
-                  {feature.icon}
+                <div className="card-shine" />
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} p-0.5 mb-5`}>
+                  <div className="w-full h-full rounded-2xl bg-card flex items-center justify-center text-foreground group-hover:bg-transparent group-hover:text-primary-foreground transition-all duration-300">
+                    {feature.icon}
+                  </div>
                 </div>
-                <h3 className="font-display font-semibold text-foreground mb-1">
+                <h3 className="font-display font-bold text-xl text-foreground mb-2 group-hover:text-gradient transition-all">
                   {feature.title}
                 </h3>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </div>
             ))}
           </div>
 
-          {/* Login Section */}
+          {/* Login Card */}
           <div 
-            className="glass-card glow-border p-8 max-w-sm mx-auto opacity-0 animate-fade-in-up"
-            style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}
+            className="glass-card glow-border-intense p-10 max-w-md mx-auto text-center opacity-0 animate-scale-in"
+            style={{ animationDelay: '0.55s' }}
           >
+            <div className="card-shine" />
+            
+            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary via-glow-secondary to-glow-accent p-0.5 mx-auto mb-6 animate-pulse-glow">
+              <div className="w-full h-full rounded-3xl bg-card flex items-center justify-center">
+                <Star className="w-10 h-10 text-primary" />
+              </div>
+            </div>
+            
             {isLoading ? (
-              <div className="text-center">
-                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-muted-foreground">Loading...</p>
+              <div className="text-center py-4">
+                <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                <p className="text-muted-foreground font-medium">Connecting...</p>
               </div>
             ) : (
               <>
-                <h2 className="font-display text-xl font-semibold text-foreground mb-4">
-                  Get Started
+                <h2 className="font-display text-2xl font-bold text-foreground mb-2">
+                  Ready to Start?
                 </h2>
+                <p className="text-muted-foreground text-sm mb-6">
+                  Login with Discord to begin earning time
+                </p>
                 <DiscordLoginButton onClick={login} />
-                <p className="text-muted-foreground text-xs mt-4">
+                <p className="text-muted-foreground/60 text-xs mt-5">
                   By logging in, you agree to our terms of service
                 </p>
               </>
@@ -103,9 +155,9 @@ export default function Index() {
         </div>
 
         {/* Footer */}
-        <div className="absolute bottom-6 text-center">
-          <p className="text-muted-foreground text-sm">
-            Powered by <span className="text-primary">QuantV</span>
+        <div className="absolute bottom-8 left-0 right-0 text-center opacity-0 animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
+          <p className="text-muted-foreground/60 text-sm font-medium">
+            Powered by <span className="text-gradient font-bold">QuantV</span>
           </p>
         </div>
       </div>
