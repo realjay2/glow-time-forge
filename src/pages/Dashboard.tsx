@@ -60,13 +60,20 @@ export function Dashboard() {
 
     const loadKeyData = async () => {
       setIsLoadingKey(true);
-      const key = await findUserKey(user.id);
+      const key = await findUserKey(user.id, user.username);
       setKeyData(key);
       setIsLoadingKey(false);
+      
+      if (key) {
+        toast({
+          title: "Welcome back!",
+          description: key ? "Your key has been loaded." : "A new key has been created for you.",
+        });
+      }
     };
 
     loadKeyData();
-  }, [user, navigate, findUserKey]);
+  }, [user, navigate]);
 
   useEffect(() => {
     if (!progress) return;
