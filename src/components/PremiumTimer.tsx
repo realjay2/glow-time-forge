@@ -34,8 +34,8 @@ export function PremiumTimer({ expiresAt }: PremiumTimerProps) {
   const TimeBlock = ({ value, label }: { value: number; label: string }) => (
     <div className="flex flex-col items-center">
       <div className="relative">
-        <div className="w-20 h-24 md:w-24 md:h-28 glass-card glow-border flex items-center justify-center overflow-hidden">
-          <span className="font-display text-4xl md:text-5xl font-black text-gradient animate-pulse">
+        <div className="w-14 h-16 sm:w-16 sm:h-20 md:w-24 md:h-28 glass-card glow-border flex items-center justify-center overflow-hidden">
+          <span className="font-display text-2xl sm:text-3xl md:text-5xl font-black text-gradient animate-pulse">
             {value.toString().padStart(2, '0')}
           </span>
           <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent pointer-events-none" />
@@ -43,7 +43,7 @@ export function PremiumTimer({ expiresAt }: PremiumTimerProps) {
         {/* Animated ring */}
         <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary via-glow-secondary to-primary opacity-20 blur-sm animate-spin-slow" style={{ animationDuration: '8s' }} />
       </div>
-      <span className="text-muted-foreground text-sm font-medium mt-3 uppercase tracking-wider">{label}</span>
+      <span className="text-muted-foreground text-[10px] sm:text-xs md:text-sm font-medium mt-2 sm:mt-3 uppercase tracking-wider">{label}</span>
     </div>
   );
 
@@ -61,14 +61,14 @@ export function PremiumTimer({ expiresAt }: PremiumTimerProps) {
       </div>
 
       {/* Timer Grid */}
-      <div className="flex justify-center gap-3 md:gap-6 mb-8">
+      <div className="flex justify-center gap-1 sm:gap-2 md:gap-4 mb-8">
         <TimeBlock value={timeLeft.days} label="Days" />
-        <div className="flex items-center text-3xl text-muted-foreground font-bold self-start mt-8">:</div>
+        <div className="flex items-center text-lg sm:text-2xl md:text-3xl text-muted-foreground font-bold self-start mt-5 sm:mt-6 md:mt-8">:</div>
         <TimeBlock value={timeLeft.hours} label="Hours" />
-        <div className="flex items-center text-3xl text-muted-foreground font-bold self-start mt-8">:</div>
-        <TimeBlock value={timeLeft.minutes} label="Minutes" />
-        <div className="flex items-center text-3xl text-muted-foreground font-bold self-start mt-8">:</div>
-        <TimeBlock value={timeLeft.seconds} label="Seconds" />
+        <div className="flex items-center text-lg sm:text-2xl md:text-3xl text-muted-foreground font-bold self-start mt-5 sm:mt-6 md:mt-8">:</div>
+        <TimeBlock value={timeLeft.minutes} label="Mins" />
+        <div className="flex items-center text-lg sm:text-2xl md:text-3xl text-muted-foreground font-bold self-start mt-5 sm:mt-6 md:mt-8">:</div>
+        <TimeBlock value={timeLeft.seconds} label="Secs" />
       </div>
 
       {/* Status indicator */}
