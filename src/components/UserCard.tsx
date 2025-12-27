@@ -88,14 +88,14 @@ export function UserCard({ user, keyData, onLogout, isLoading }: UserCardProps) 
         ) : keyData ? (
           <div className="space-y-3">
             {/* License Key */}
-            <div className="stat-card group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center shrink-0">
-                <Key className="w-5 h-5 text-primary" />
+            <div className="stat-card group flex-col items-start gap-2">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center shrink-0">
+                  <Key className="w-5 h-5 text-primary" />
+                </div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">License Key</p>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-0.5">License Key</p>
-                <p className="font-mono text-sm text-foreground truncate">{keyData.key}</p>
-              </div>
+              <p className="font-mono text-xs sm:text-sm text-foreground break-all w-full bg-secondary/50 px-3 py-2 rounded-lg select-all">{keyData.key}</p>
             </div>
             
             {/* Expiration */}
