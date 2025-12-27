@@ -7,6 +7,7 @@ import { TaskCard } from '@/components/TaskCard';
 import { UserCard } from '@/components/UserCard';
 import { ProgressBar } from '@/components/ProgressBar';
 import { CooldownTimer } from '@/components/CooldownTimer';
+import { PremiumTimer } from '@/components/PremiumTimer';
 import { Task, KeyData } from '@/types';
 import { toast } from '@/hooks/use-toast';
 import { CheckCircle, Sparkles, Trophy, ArrowLeft } from 'lucide-react';
@@ -86,6 +87,7 @@ export function Dashboard() {
 
   const completedCount = tasks.filter(t => t.completed).length;
   const allTasksComplete = completedCount === tasks.length;
+  const isPremium = keyData?.Note?.toLowerCase() === 'premium';
 
   useEffect(() => {
     if (allTasksComplete && !isOnCooldown && user) {
@@ -179,65 +181,74 @@ export function Dashboard() {
             </div>
           </div>
 
-          {/* Right Column - Tasks */}
+          {/* Right Column - Tasks or Premium Timer */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Progress Card */}
-            <div className="glass-card p-6 opacity-0 animate-slide-in-right">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-glow-secondary flex items-center justify-center">
-                  <Trophy className="w-5 h-5 text-primary-foreground" />
-                </div>
-                <div>
-                  <h2 className="font-display font-bold text-lg text-foreground">Your Progress</h2>
-                  <p className="text-muted-foreground text-sm">Complete all tasks to earn +1 hour</p>
-                </div>
+            {isPremium ? (
+              /* Premium Timer View */
+              <div className="opacity-0 animate-slide-in-right">
+                <PremiumTimer expiresAt={keyData.expiresAt} />
               </div>
-              <ProgressBar completed={completedCount} total={tasks.length} />
-            </div>
+            ) : (
+              <>
+                {/* Progress Card */}
+                <div className="glass-card p-6 opacity-0 animate-slide-in-right">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-glow-secondary flex items-center justify-center">
+                      <Trophy className="w-5 h-5 text-primary-foreground" />
+                    </div>
+                    <div>
+                      <h2 className="font-display font-bold text-lg text-foreground">Your Progress</h2>
+                      <p className="text-muted-foreground text-sm">Complete all tasks to earn +1 hour</p>
+                    </div>
+                  </div>
+                  <ProgressBar completed={completedCount} total={tasks.length} />
+                </div>
 
-            {/* Cooldown Timer */}
-            {isOnCooldown && cooldownEnd && (
-              <div className="opacity-0 animate-scale-in" style={{ animationDelay: '0.1s' }}>
-                <CooldownTimer endTime={cooldownEnd} onComplete={handleCooldownComplete} />
-              </div>
+                {/* Cooldown Timer */}
+                {isOnCooldown && cooldownEnd && (
+                  <div className="opacity-0 animate-scale-in" style={{ animationDelay: '0.1s' }}>
+                    <CooldownTimer endTime={cooldownEnd} onComplete={handleCooldownComplete} />
+                  </div>
+                )}
+
+                {/* Success States */}
+                {allTasksComplete && isUpdating && (
+                  <div className="glass-card glow-border-intense p-8 text-center opacity-0 animate-scale-in">
+                    <Sparkles className="w-12 h-12 text-primary mx-auto mb-4 animate-pulse" />
+                    <p className="font-display text-xl font-bold text-foreground mb-2">Processing Reward...</p>
+                    <p className="text-muted-foreground">Adding time to your key</p>
+                  </div>
+                )}
+
+                {allTasksComplete && !isUpdating && isOnCooldown && (
+                  <div className="glass-card glow-border-intense p-8 text-center opacity-0 animate-scale-in">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-success to-glow-secondary flex items-center justify-center mx-auto mb-4">
+                      <CheckCircle className="w-8 h-8 text-primary-foreground" />
+                    </div>
+                    <p className="font-display text-2xl font-bold text-gradient mb-2">+1 Hour Added!</p>
+                    <p className="text-muted-foreground">Your premium time has been extended</p>
+                  </div>
+                )}
+
+                {/* Task Cards */}
+                <div className="space-y-4">
+                  {tasks.map((task, index) => (
+                    <div 
+                      key={task.id}
+                      className="opacity-0 animate-slide-in-right"
+                      style={{ animationDelay: `${0.15 + index * 0.1}s` }}
+                    >
+                      <TaskCard
+                        task={task}
+                        onComplete={handleTaskComplete}
+                        disabled={isOnCooldown || task.completed}
+                        index={index}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
             )}
-
-            {/* Success States */}
-            {allTasksComplete && isUpdating && (
-              <div className="glass-card glow-border-intense p-8 text-center opacity-0 animate-scale-in">
-                <Sparkles className="w-12 h-12 text-primary mx-auto mb-4 animate-pulse" />
-                <p className="font-display text-xl font-bold text-foreground mb-2">Processing Reward...</p>
-                <p className="text-muted-foreground">Adding time to your key</p>
-              </div>
-            )}
-
-            {allTasksComplete && !isUpdating && isOnCooldown && (
-              <div className="glass-card glow-border-intense p-8 text-center opacity-0 animate-scale-in">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-success to-glow-secondary flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="w-8 h-8 text-primary-foreground" />
-                </div>
-                <p className="font-display text-2xl font-bold text-gradient mb-2">+1 Hour Added!</p>
-                <p className="text-muted-foreground">Your premium time has been extended</p>
-              </div>
-            )}
-
-            {/* Task Cards */}
-            <div className="space-y-4">
-              {tasks.map((task, index) => (
-                <div 
-                  key={task.id}
-                  className="opacity-0 animate-slide-in-right"
-                  style={{ animationDelay: `${0.15 + index * 0.1}s` }}
-                >
-                  <TaskCard
-                    task={task}
-                    onComplete={handleTaskComplete}
-                    disabled={isOnCooldown || task.completed}
-                    index={index}
-                  />
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>
