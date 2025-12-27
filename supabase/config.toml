@@ -1,1 +1,10 @@
 project_id = "zxfsenzyeolyiltzliop"
+
+[functions.get-user-key]
+verify_jwt = false
+
+[functions.update-key-expiration]
+verify_jwt = false
+
+[functions.create-user-key]
+verify_jwt = false
