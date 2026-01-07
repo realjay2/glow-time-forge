@@ -1,7 +1,9 @@
 import { DiscordUser, KeyData } from '@/types';
-import { LogOut, Key, Clock, User, Sparkles } from 'lucide-react';
+import { LogOut, Key, Clock, User, Sparkles, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import { toast } from '@/hooks/use-toast';
 
 interface UserCardProps {
   user: DiscordUser;
@@ -11,6 +13,27 @@ interface UserCardProps {
 }
 
 export function UserCard({ user, keyData, onLogout, isLoading }: UserCardProps) {
+  const [copied, setCopied] = useState(false);
+
+  const copyKey = async () => {
+    if (!keyData?.key) return;
+    try {
+      await navigator.clipboard.writeText(keyData.key);
+      setCopied(true);
+      toast({
+        title: "Copied!",
+        description: "License key copied to clipboard",
+      });
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast({
+        title: "Failed to copy",
+        description: "Please select and copy manually",
+        variant: "destructive",
+      });
+    }
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -89,13 +112,25 @@ export function UserCard({ user, keyData, onLogout, isLoading }: UserCardProps) 
           <div className="space-y-3">
             {/* License Key */}
             <div className="stat-card group flex-col items-start gap-2">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center shrink-0">
-                  <Key className="w-5 h-5 text-primary" />
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center shrink-0">
+                    <Key className="w-5 h-5 text-primary" />
+                  </div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">License Key</p>
                 </div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">License Key</p>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={copyKey}
+                  className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                >
+                  {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                </Button>
               </div>
-              <p className="font-mono text-xs sm:text-sm text-foreground break-all w-full bg-secondary/50 px-3 py-2 rounded-lg select-all">{keyData.key}</p>
+              <p className="font-mono text-xs sm:text-sm text-foreground break-all w-full bg-secondary/50 px-3 py-2 rounded-lg select-all">
+                {keyData.key || 'No key available'}
+              </p>
             </div>
             
             {/* Expiration */}
