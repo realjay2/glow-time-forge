@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Check, ExternalLink, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { Task } from '@/types';
 import { cn } from '@/lib/utils';
+import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 interface TaskCardProps {
   task: Task;
@@ -20,6 +21,7 @@ export function TaskCard({ task, onComplete, disabled, index }: TaskCardProps) {
   const [taskWindowOpen, setTaskWindowOpen] = useState(false);
   const taskWindowRef = useRef<Window | null>(null);
   const checkIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const { playSound } = useSoundEffects();
 
   // Track window focus to pause/resume timer
   useEffect(() => {
@@ -79,6 +81,7 @@ export function TaskCard({ task, onComplete, disabled, index }: TaskCardProps) {
       timer = setTimeout(() => setCountdown(countdown - 1), 1000);
     } else if (isVerifying && countdown === 0) {
       setIsVerifying(false);
+      playSound('taskComplete');
       onComplete(task.id);
     }
     return () => clearTimeout(timer);

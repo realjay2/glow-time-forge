@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Clock, Sparkles, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 interface TimeExtensionNotificationProps {
   oldExpiry: string;
@@ -17,8 +18,12 @@ export function TimeExtensionNotification({
 }: TimeExtensionNotificationProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
+  const { playSound } = useSoundEffects();
 
   useEffect(() => {
+    // Play celebration sound
+    playSound('timeExtension');
+    
     // Trigger entrance animation
     const showTimer = setTimeout(() => setIsVisible(true), 100);
     
@@ -32,7 +37,7 @@ export function TimeExtensionNotification({
       clearTimeout(showTimer);
       clearTimeout(dismissTimer);
     };
-  }, [onClose]);
+  }, [onClose, playSound]);
 
   const formatDateTime = (dateString: string) => {
     return new Date(dateString).toLocaleString('en-US', {
