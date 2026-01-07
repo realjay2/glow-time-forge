@@ -8,6 +8,7 @@ import { UserCard } from '@/components/UserCard';
 import { ProgressBar } from '@/components/ProgressBar';
 import { CooldownTimer } from '@/components/CooldownTimer';
 import { PremiumTimer } from '@/components/PremiumTimer';
+import { TimeExtensionNotification } from '@/components/TimeExtensionNotification';
 import { Task, KeyData } from '@/types';
 import { toast } from '@/hooks/use-toast';
 import { CheckCircle, Sparkles, Trophy, ArrowLeft } from 'lucide-react';
@@ -52,6 +53,11 @@ export function Dashboard() {
   const [keyData, setKeyData] = useState<KeyData | null>(null);
   const [isLoadingKey, setIsLoadingKey] = useState(true);
   const [tasks, setTasks] = useState<Task[]>(TASKS);
+  const [timeExtension, setTimeExtension] = useState<{
+    oldExpiry: string;
+    newExpiry: string;
+    hoursAdded: number;
+  } | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -96,18 +102,21 @@ export function Dashboard() {
   }, [allTasksComplete, isOnCooldown, user]);
 
   const handleAllTasksComplete = async () => {
-    if (!user) return;
+    if (!user || !keyData) return;
 
+    const oldExpiry = keyData.expiresAt;
     const success = await updateKeyExpiration(user.id, 1);
     
     if (success) {
-      toast({
-        title: "🎉 +1 Hour Added!",
-        description: "Premium time has been added to your key!",
-      });
-      
       const updatedKey = await findUserKey(user.id);
-      setKeyData(updatedKey);
+      if (updatedKey) {
+        setKeyData(updatedKey);
+        setTimeExtension({
+          oldExpiry,
+          newExpiry: updatedKey.expiresAt,
+          hoursAdded: 1
+        });
+      }
       markAllTasksComplete();
     } else {
       toast({
@@ -142,9 +151,20 @@ export function Dashboard() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-grid relative overflow-hidden">
-      {/* Hero glow */}
-      <div className="hero-glow" />
+    <>
+      {/* Time Extension Notification */}
+      {timeExtension && (
+        <TimeExtensionNotification
+          oldExpiry={timeExtension.oldExpiry}
+          newExpiry={timeExtension.newExpiry}
+          hoursAdded={timeExtension.hoursAdded}
+          onClose={() => setTimeExtension(null)}
+        />
+      )}
+
+      <div className="min-h-screen bg-grid relative overflow-hidden">
+        {/* Hero glow */}
+        <div className="hero-glow" />
       
       {/* Background effects */}
       <div className="fixed inset-0 pointer-events-none">
@@ -252,7 +272,8 @@ export function Dashboard() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
