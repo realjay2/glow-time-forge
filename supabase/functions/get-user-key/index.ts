@@ -90,7 +90,7 @@ serve(async (req) => {
       );
     }
 
-    // Return key data (excluding sensitive info)
+    // Return key data (excluding sensitive account info)
     return new Response(
       JSON.stringify({ 
         success: true, 
@@ -98,7 +98,12 @@ serve(async (req) => {
           discordID: userKey.discordID,
           expiresAt: userKey.expiresAt,
           Note: userKey.Note,
-          createdAt: userKey.createdAt
+          createdAt: userKey.createdAt,
+          key: userKey.key,
+          AltGen: userKey.AltGen,
+          Blacklisted: userKey.Blacklisted,
+          ExecAmt: userKey.ExecAmt,
+          websitePurchase: userKey.websitePurchase
         }
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
