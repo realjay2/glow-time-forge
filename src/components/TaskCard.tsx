@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, ExternalLink, Loader2, ArrowRight } from 'lucide-react';
+import { Check, ExternalLink, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { Task } from '@/types';
 import { cn } from '@/lib/utils';
 
@@ -15,7 +15,64 @@ export function TaskCard({ task, onComplete, disabled, index }: TaskCardProps) {
   const [isVerifying, setIsVerifying] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [hasStarted, setHasStarted] = useState(false);
+  const [activeTime, setActiveTime] = useState(0);
+  const [isWindowFocused, setIsWindowFocused] = useState(true);
+  const [taskWindowOpen, setTaskWindowOpen] = useState(false);
+  const taskWindowRef = useRef<Window | null>(null);
+  const checkIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Track window focus to pause/resume timer
+  useEffect(() => {
+    const handleVisibility = () => {
+      setIsWindowFocused(!document.hidden);
+    };
+
+    const handleFocus = () => setIsWindowFocused(true);
+    const handleBlur = () => setIsWindowFocused(false);
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('focus', handleFocus);
+    window.addEventListener('blur', handleBlur);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('blur', handleBlur);
+    };
+  }, []);
+
+  // Check if task window is still open
+  useEffect(() => {
+    if (taskWindowOpen && taskWindowRef.current) {
+      checkIntervalRef.current = setInterval(() => {
+        if (taskWindowRef.current?.closed) {
+          setTaskWindowOpen(false);
+          taskWindowRef.current = null;
+        }
+      }, 500);
+    }
+
+    return () => {
+      if (checkIntervalRef.current) {
+        clearInterval(checkIntervalRef.current);
+      }
+    };
+  }, [taskWindowOpen]);
+
+  // Track active time when task window is open and user is away from this page
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    
+    if (hasStarted && taskWindowOpen && !isWindowFocused && !task.completed && !isVerifying) {
+      timer = setInterval(() => {
+        setActiveTime(prev => prev + 1);
+      }, 1000);
+    }
+
+    return () => clearInterval(timer);
+  }, [hasStarted, taskWindowOpen, isWindowFocused, task.completed, isVerifying]);
+
+  // Verification countdown
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (isVerifying && countdown > 0) {
@@ -29,14 +86,24 @@ export function TaskCard({ task, onComplete, disabled, index }: TaskCardProps) {
 
   const handleStartTask = () => {
     if (task.completed || disabled) return;
-    window.open(task.action, '_blank');
+    taskWindowRef.current = window.open(task.action, '_blank');
+    setTaskWindowOpen(true);
     setHasStarted(true);
+    setActiveTime(0);
   };
+
+  const canVerify = activeTime >= task.verificationTime;
 
   const handleVerify = () => {
     if (!hasStarted || task.completed || disabled) return;
+    
+    if (!canVerify) {
+      // Show remaining time needed
+      return;
+    }
+    
     setIsVerifying(true);
-    setCountdown(task.verificationTime);
+    setCountdown(3); // Short verification countdown
   };
 
   const getTaskEmoji = () => {
@@ -56,6 +123,8 @@ export function TaskCard({ task, onComplete, disabled, index }: TaskCardProps) {
       default: return 'from-primary to-glow-secondary';
     }
   };
+
+  const remainingTime = Math.max(0, task.verificationTime - activeTime);
 
   return (
     <div
@@ -109,7 +178,7 @@ export function TaskCard({ task, onComplete, disabled, index }: TaskCardProps) {
           </div>
           
           {/* Actions */}
-          <div className="mt-4">
+          <div className="mt-4 space-y-3">
             {task.completed ? (
               <div className="flex items-center gap-2 text-success text-sm font-semibold">
                 <Check className="w-4 h-4" />
@@ -120,7 +189,7 @@ export function TaskCard({ task, onComplete, disabled, index }: TaskCardProps) {
                 <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-gradient-to-r from-primary to-glow-secondary rounded-full transition-all duration-1000"
-                    style={{ width: `${((task.verificationTime - countdown) / task.verificationTime) * 100}%` }}
+                    style={{ width: `${((3 - countdown) / 3) * 100}%` }}
                   />
                 </div>
                 <div className="flex items-center gap-2 text-primary text-sm font-medium shrink-0">
@@ -138,14 +207,71 @@ export function TaskCard({ task, onComplete, disabled, index }: TaskCardProps) {
                 Start Task
               </Button>
             ) : (
-              <Button 
-                onClick={handleVerify}
-                disabled={disabled}
-                className="gap-2 bg-gradient-to-r from-glow-secondary to-glow-accent hover:opacity-90 text-primary-foreground font-semibold shadow-button animate-pulse-glow"
-              >
-                <ArrowRight className="w-4 h-4" />
-                Verify Completion
-              </Button>
+              <div className="space-y-3">
+                {/* Time tracking indicator */}
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 text-xs">
+                    {taskWindowOpen && !isWindowFocused ? (
+                      <>
+                        <Eye className="w-3.5 h-3.5 text-success animate-pulse" />
+                        <span className="text-success font-medium">Tracking time...</span>
+                      </>
+                    ) : taskWindowOpen ? (
+                      <>
+                        <EyeOff className="w-3.5 h-3.5 text-muted-foreground" />
+                        <span className="text-muted-foreground">Stay on task page to track time</span>
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="w-3.5 h-3.5 text-destructive" />
+                        <span className="text-destructive">Task window closed - reopen to continue</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Progress bar for time requirement */}
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>Time spent on task</span>
+                    <span className="font-mono">{activeTime}s / {task.verificationTime}s</span>
+                  </div>
+                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                    <div 
+                      className={cn(
+                        "h-full rounded-full transition-all duration-300",
+                        canVerify 
+                          ? "bg-gradient-to-r from-success to-glow-secondary" 
+                          : "bg-gradient-to-r from-primary/60 to-glow-secondary/60"
+                      )}
+                      style={{ width: `${Math.min(100, (activeTime / task.verificationTime) * 100)}%` }}
+                    />
+                  </div>
+                </div>
+
+                <Button 
+                  onClick={handleVerify}
+                  disabled={disabled || !canVerify}
+                  className={cn(
+                    "gap-2 font-semibold shadow-button w-full sm:w-auto",
+                    canVerify 
+                      ? "bg-gradient-to-r from-success to-glow-secondary hover:opacity-90 text-primary-foreground animate-pulse-glow"
+                      : "bg-muted text-muted-foreground cursor-not-allowed"
+                  )}
+                >
+                  {canVerify ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Complete Task
+                    </>
+                  ) : (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      {remainingTime}s remaining
+                    </>
+                  )}
+                </Button>
+              </div>
             )}
           </div>
         </div>
