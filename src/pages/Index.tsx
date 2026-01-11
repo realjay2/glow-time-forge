@@ -1,16 +1,19 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDiscordAuth } from '@/hooks/useDiscordAuth';
 import { DiscordLoginButton } from '@/components/DiscordLoginButton';
-import { Clock, Gift, Shield, Sparkles, Zap, Star } from 'lucide-react';
+import { Gift, Shield, Sparkles, Zap, Star } from 'lucide-react';
 
 export default function Index() {
   const navigate = useNavigate();
   const { user, isLoading, login } = useDiscordAuth();
+  const hasNavigatedRef = useRef(false);
 
   useEffect(() => {
-    if (!isLoading && user) {
-      navigate('/dashboard');
+    // Prevent multiple navigations
+    if (!isLoading && user && !hasNavigatedRef.current) {
+      hasNavigatedRef.current = true;
+      navigate('/dashboard', { replace: true });
     }
   }, [user, isLoading, navigate]);
 
@@ -41,21 +44,27 @@ export default function Index() {
     { value: '3', label: 'Tasks' },
   ];
 
+  // Memoize static content
+  const backgroundOrbs = useMemo(() => (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden will-change-transform">
+      <div className="floating-orb w-[500px] h-[500px] -top-48 -left-48 bg-primary/20" />
+      <div className="floating-orb w-[600px] h-[600px] -bottom-64 -right-64 bg-glow-secondary/15" style={{ animationDelay: '2s' }} />
+      {/* Hide extra orb on mobile for performance */}
+      <div className="floating-orb w-[400px] h-[400px] top-1/3 right-1/4 bg-glow-accent/10 hidden md:block" style={{ animationDelay: '4s' }} />
+      
+      {/* Rotating rings - hidden on mobile for performance */}
+      <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-primary/10 rounded-full animate-rotate-slow" />
+      <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-glow-secondary/10 rounded-full animate-rotate-slow" style={{ animationDirection: 'reverse', animationDuration: '25s' }} />
+    </div>
+  ), []);
+
   return (
     <div className="min-h-screen bg-grid relative overflow-hidden">
       {/* Hero glow effect */}
       <div className="hero-glow" />
       
       {/* Animated background orbs */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="floating-orb w-[500px] h-[500px] -top-48 -left-48 bg-primary/20" />
-        <div className="floating-orb w-[600px] h-[600px] -bottom-64 -right-64 bg-glow-secondary/15" style={{ animationDelay: '2s' }} />
-        <div className="floating-orb w-[400px] h-[400px] top-1/3 right-1/4 bg-glow-accent/10" style={{ animationDelay: '4s' }} />
-        
-        {/* Rotating accent ring */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-primary/10 rounded-full animate-rotate-slow" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-glow-secondary/10 rounded-full animate-rotate-slow" style={{ animationDirection: 'reverse', animationDuration: '25s' }} />
-      </div>
+      {backgroundOrbs}
 
       {/* Main content */}
       <div className="relative z-10 container mx-auto px-4 min-h-screen flex flex-col items-center justify-center py-12">

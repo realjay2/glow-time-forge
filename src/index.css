@@ -194,6 +194,20 @@
   .floating-orb {
     @apply absolute rounded-full blur-3xl pointer-events-none;
     animation: float 8s ease-in-out infinite;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+  
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    .floating-orb,
+    .animate-rotate-slow,
+    .animate-bounce-subtle,
+    .animate-float,
+    .animate-pulse-glow {
+      animation: none !important;
+    }
   }
 }
 
@@ -339,10 +353,12 @@
 
   .animate-pulse-glow {
     animation: pulse-glow 2.5s ease-in-out infinite;
+    will-change: box-shadow;
   }
 
   .animate-float {
     animation: float 6s ease-in-out infinite;
+    will-change: transform;
   }
   
   .animate-float-slow {
@@ -377,6 +393,7 @@
   
   .animate-rotate-slow {
     animation: rotate-slow 20s linear infinite;
+    will-change: transform;
   }
   
   .animate-bounce-subtle {
