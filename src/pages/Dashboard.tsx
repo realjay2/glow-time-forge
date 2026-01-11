@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDiscordAuth } from '@/hooks/useDiscordAuth';
 import { useGitHub } from '@/hooks/useGitHub';
@@ -58,12 +58,19 @@ export function Dashboard() {
     newExpiry: string;
     hoursAdded: number;
   } | null>(null);
+  
+  const hasLoadedRef = useRef(false);
+  const hasNavigatedRef = useRef(false);
 
   useEffect(() => {
-    if (!user) {
-      navigate('/');
+    if (!user && !hasNavigatedRef.current) {
+      hasNavigatedRef.current = true;
+      navigate('/', { replace: true });
       return;
     }
+
+    if (!user || hasLoadedRef.current) return;
+    hasLoadedRef.current = true;
 
     const loadKeyData = async () => {
       setIsLoadingKey(true);
@@ -74,13 +81,13 @@ export function Dashboard() {
       if (key) {
         toast({
           title: "Welcome back!",
-          description: key ? "Your key has been loaded." : "A new key has been created for you.",
+          description: "Your key has been loaded.",
         });
       }
     };
 
     loadKeyData();
-  }, [user, navigate]);
+  }, [user, navigate, findUserKey]);
 
   useEffect(() => {
     if (!progress) return;
@@ -91,13 +98,19 @@ export function Dashboard() {
     })));
   }, [progress]);
 
-  const completedCount = tasks.filter(t => t.completed).length;
+  // Memoize derived values
+  const completedCount = useMemo(() => tasks.filter(t => t.completed).length, [tasks]);
   const allTasksComplete = completedCount === tasks.length;
   const isPremium = keyData?.Note?.toLowerCase() === 'premium';
 
+  const allTasksCompleteRef = useRef(false);
+  
   useEffect(() => {
-    if (allTasksComplete && !isOnCooldown && user) {
+    if (allTasksComplete && !isOnCooldown && user && !allTasksCompleteRef.current) {
+      allTasksCompleteRef.current = true;
       handleAllTasksComplete();
+    } else if (!allTasksComplete) {
+      allTasksCompleteRef.current = false;
     }
   }, [allTasksComplete, isOnCooldown, user]);
 
@@ -166,10 +179,10 @@ export function Dashboard() {
         {/* Hero glow */}
         <div className="hero-glow" />
       
-      {/* Background effects */}
-      <div className="fixed inset-0 pointer-events-none">
+      {/* Background effects - simplified for mobile */}
+      <div className="fixed inset-0 pointer-events-none will-change-transform">
         <div className="floating-orb w-[500px] h-[500px] top-0 left-1/4 bg-primary/10" />
-        <div className="floating-orb w-[400px] h-[400px] bottom-0 right-1/4 bg-glow-secondary/10" style={{ animationDelay: '3s' }} />
+        <div className="floating-orb w-[400px] h-[400px] bottom-0 right-1/4 bg-glow-secondary/10 hidden md:block" style={{ animationDelay: '3s' }} />
       </div>
 
       <div className="relative z-10 container mx-auto px-4 py-8 max-w-5xl">

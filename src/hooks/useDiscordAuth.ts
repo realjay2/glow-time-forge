@@ -1,24 +1,32 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { DiscordUser } from '@/types';
 
 const DISCORD_CLIENT_ID = '1442356676689789080';
-const REDIRECT_URI = window.location.origin + '/callback';
+const REDIRECT_URI = typeof window !== 'undefined' ? window.location.origin + '/callback' : '';
 const SCOPES = ['identify', 'email'];
 
 export function useDiscordAuth() {
-  const [user, setUser] = useState<DiscordUser | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<DiscordUser | null>(() => {
+    // Initialize from localStorage synchronously to prevent flash
+    if (typeof window === 'undefined') return null;
+    const storedUser = localStorage.getItem('discord_user');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+  
+  const [accessToken, setAccessToken] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    return localStorage.getItem('discord_token');
+  });
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const initializedRef = useRef(false);
 
   useEffect(() => {
-    // Check for existing session
-    const storedUser = localStorage.getItem('discord_user');
-    const storedToken = localStorage.getItem('discord_token');
+    // Prevent double initialization
+    if (initializedRef.current) return;
+    initializedRef.current = true;
     
-    if (storedUser && storedToken) {
-      setUser(JSON.parse(storedUser));
-      setAccessToken(storedToken);
-    }
+    // Already loaded from initial state, just mark as not loading
     setIsLoading(false);
   }, []);
 
