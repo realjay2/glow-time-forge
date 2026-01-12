@@ -79,13 +79,13 @@ export default function Index() {
             
             {/* Main title */}
             <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight">
-              <span className="text-gradient animate-text-glow">CORESERV</span>
+              <span className="text-gradient animate-text-glow">CORE</span>
               <br />
               <span className="text-foreground">REWARDS</span>
             </h1>
             
             <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-              Complete simple tasks and <span className="text-primary font-semibold">earn free premium time</span> for your CoreServ license. 
+              Complete simple tasks and <span className="text-primary font-semibold">earn free premium time</span> for your Core license. 
               No payment required — just a few clicks.
             </p>
           </div>
@@ -166,7 +166,7 @@ export default function Index() {
         {/* Footer */}
         <div className="absolute bottom-8 left-0 right-0 text-center opacity-0 animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
           <p className="text-muted-foreground/60 text-sm font-medium">
-            Powered by <span className="text-gradient font-bold">CoreServ</span>
+            Powered by <span className="text-gradient font-bold">Core</span>
           </p>
         </div>
       </div>
