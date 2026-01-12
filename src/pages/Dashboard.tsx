@@ -36,7 +36,7 @@ const TASKS: Task[] = [
   {
     id: 'video',
     title: 'Watch Tutorial',
-    description: 'Learn how to get the most out of CoreServ',
+    description: 'Learn how to get the most out of Core',
     icon: '▶️',
     completed: false,
     action: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
