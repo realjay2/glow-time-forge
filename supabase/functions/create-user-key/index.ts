@@ -6,7 +6,7 @@ const corsHeaders = {
 };
 
 const OWNER = "realjay2";
-const REPO = "QuantV-Holder";
+const REPO = "CoreServ-Holder";
 const FILE_PATH = "Keys.json";
 const BRANCH = "main";
 
@@ -26,7 +26,7 @@ interface KeyData {
 
 function generateKey(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let key = 'QV-';
+  let key = 'CS-';
   for (let i = 0; i < 16; i++) {
     key += chars.charAt(Math.floor(Math.random() * chars.length));
     if ((i + 1) % 4 === 0 && i < 15) key += '-';
@@ -69,7 +69,7 @@ serve(async (req) => {
         headers: {
           'Authorization': `Bearer ${githubToken}`,
           'Accept': 'application/vnd.github.v3+json',
-          'User-Agent': 'QuantV-Key-System'
+          'User-Agent': 'CoreServ-Key-System'
         }
       }
     );
@@ -139,7 +139,7 @@ serve(async (req) => {
           'Authorization': `Bearer ${githubToken}`,
           'Accept': 'application/vnd.github.v3+json',
           'Content-Type': 'application/json',
-          'User-Agent': 'QuantV-Key-System'
+          'User-Agent': 'CoreServ-Key-System'
         },
         body: JSON.stringify({
           message: `Create key for user ${discordId}`,

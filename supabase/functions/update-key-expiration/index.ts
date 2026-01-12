@@ -6,7 +6,7 @@ const corsHeaders = {
 };
 
 const OWNER = "realjay2";
-const REPO = "QuantV-Holder";
+const REPO = "CoreServ-Holder";
 const FILE_PATH = "Keys.json";
 const BRANCH = "main";
 
@@ -59,7 +59,7 @@ serve(async (req) => {
         headers: {
           'Authorization': `Bearer ${githubToken}`,
           'Accept': 'application/vnd.github.v3+json',
-          'User-Agent': 'QuantV-Key-System'
+          'User-Agent': 'CoreServ-Key-System'
         }
       }
     );
@@ -106,7 +106,7 @@ serve(async (req) => {
           'Authorization': `Bearer ${githubToken}`,
           'Accept': 'application/vnd.github.v3+json',
           'Content-Type': 'application/json',
-          'User-Agent': 'QuantV-Key-System'
+          'User-Agent': 'CoreServ-Key-System'
         },
         body: JSON.stringify({
           message: `Update key expiration for ${discordId}`,
