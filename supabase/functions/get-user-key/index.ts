@@ -6,7 +6,7 @@ const corsHeaders = {
 };
 
 const OWNER = "realjay2";
-const REPO = "CoreServ-Holder";
+const REPO = "QuantV-Holder";
 const FILE_PATH = "Keys.json";
 const BRANCH = "main";
 
