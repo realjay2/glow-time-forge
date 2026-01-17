@@ -4,6 +4,7 @@ import { Check, ExternalLink, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-re
 import { Task } from '@/types';
 import { cn } from '@/lib/utils';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
+import { Confetti } from '@/components/Confetti';
 
 interface TaskCardProps {
   task: Task;
@@ -19,6 +20,7 @@ export function TaskCard({ task, onComplete, disabled, index }: TaskCardProps) {
   const [activeTime, setActiveTime] = useState(0);
   const [isWindowFocused, setIsWindowFocused] = useState(true);
   const [taskWindowOpen, setTaskWindowOpen] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
   const taskWindowRef = useRef<Window | null>(null);
   const checkIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const { playSound } = useSoundEffects();
@@ -81,6 +83,7 @@ export function TaskCard({ task, onComplete, disabled, index }: TaskCardProps) {
       timer = setTimeout(() => setCountdown(countdown - 1), 1000);
     } else if (isVerifying && countdown === 0) {
       setIsVerifying(false);
+      setShowConfetti(true);
       playSound('taskComplete');
       onComplete(task.id);
     }
@@ -130,13 +133,15 @@ export function TaskCard({ task, onComplete, disabled, index }: TaskCardProps) {
   const remainingTime = Math.max(0, task.verificationTime - activeTime);
 
   return (
-    <div
-      className={cn(
-        "glass-card p-6 transition-all duration-500 group",
-        task.completed && "border-success/30 bg-success/5",
-        !disabled && !task.completed && "hover-glow cursor-pointer"
-      )}
-    >
+    <>
+      <Confetti isActive={showConfetti} onComplete={() => setShowConfetti(false)} />
+      <div
+        className={cn(
+          "glass-card p-6 transition-all duration-500 group",
+          task.completed && "border-success/30 bg-success/5",
+          !disabled && !task.completed && "hover-glow cursor-pointer"
+        )}
+      >
       <div className="card-shine" />
       
       <div className="flex items-start gap-5">
@@ -276,5 +281,6 @@ export function TaskCard({ task, onComplete, disabled, index }: TaskCardProps) {
         </div>
       </div>
     </div>
+    </>
   );
 }
