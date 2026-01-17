@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDiscordAuth } from '@/hooks/useDiscordAuth';
 import { DiscordLoginButton } from '@/components/DiscordLoginButton';
-import { Gift, Shield, Sparkles, Zap, Star } from 'lucide-react';
+import { Gift, Shield, Sparkles, Zap, Star, ExternalLink, MessageCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function Index() {
   const navigate = useNavigate();
@@ -67,37 +68,37 @@ export default function Index() {
       {backgroundOrbs}
 
       {/* Main content */}
-      <div className="relative z-10 container mx-auto px-4 min-h-screen flex flex-col items-center justify-center py-12">
+      <div className="relative z-10 container mx-auto px-4 min-h-screen flex flex-col items-center justify-center py-16 pb-32 sm:pb-28">
         <div className="max-w-4xl w-full">
           {/* Hero Section */}
-          <div className="text-center mb-16 opacity-0 animate-fade-in-up">
+          <div className="text-center mb-10 sm:mb-16 opacity-0 animate-fade-in-up">
             {/* Floating badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 text-primary text-sm font-medium mb-8 animate-bounce-subtle">
-              <Sparkles className="w-4 h-4" />
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-primary/10 border border-primary/30 text-primary text-xs sm:text-sm font-medium mb-6 sm:mb-8 animate-bounce-subtle">
+              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>Earn Premium Time For Free</span>
             </div>
             
             {/* Main title */}
-            <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight">
+            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black mb-4 sm:mb-6 tracking-tight">
               <span className="text-gradient animate-text-glow">CORE</span>
               <br />
               <span className="text-foreground">REWARDS</span>
             </h1>
             
-            <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+            <p className="text-muted-foreground text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed px-2">
               Complete simple tasks and <span className="text-primary font-semibold">earn free premium time</span> for your Core license. 
               No payment required — just a few clicks.
             </p>
           </div>
 
           {/* Stats Row */}
-          <div className="flex justify-center gap-4 md:gap-8 mb-12 opacity-0 animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
+          <div className="flex justify-center gap-3 sm:gap-4 md:gap-8 mb-8 sm:mb-12 opacity-0 animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
             {stats.map((stat, i) => (
-              <div key={stat.label} className="text-center px-6 py-4">
-                <div className="font-display text-3xl md:text-4xl font-bold text-gradient mb-1">
+              <div key={stat.label} className="text-center px-3 sm:px-6 py-3 sm:py-4">
+                <div className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-gradient mb-1">
                   {stat.value}
                 </div>
-                <div className="text-muted-foreground text-sm uppercase tracking-wider font-medium">
+                <div className="text-muted-foreground text-xs sm:text-sm uppercase tracking-wider font-medium">
                   {stat.label}
                 </div>
               </div>
@@ -105,23 +106,23 @@ export default function Index() {
           </div>
 
           {/* Features Grid */}
-          <div className="grid md:grid-cols-3 gap-5 mb-14">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 mb-10 sm:mb-14">
             {features.map((feature, index) => (
               <div
                 key={feature.title}
-                className="glass-card p-6 hover-lift group opacity-0 animate-fade-in-up"
+                className="glass-card p-5 sm:p-6 hover-lift group opacity-0 animate-fade-in-up"
                 style={{ animationDelay: `${0.25 + index * 0.1}s` }}
               >
                 <div className="card-shine" />
-                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} p-0.5 mb-5`}>
-                  <div className="w-full h-full rounded-2xl bg-card flex items-center justify-center text-foreground group-hover:bg-transparent group-hover:text-primary-foreground transition-all duration-300">
+                <div className={`w-12 sm:w-14 h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br ${feature.color} p-0.5 mb-4 sm:mb-5`}>
+                  <div className="w-full h-full rounded-xl sm:rounded-2xl bg-card flex items-center justify-center text-foreground group-hover:bg-transparent group-hover:text-primary-foreground transition-all duration-300">
                     {feature.icon}
                   </div>
                 </div>
-                <h3 className="font-display font-bold text-xl text-foreground mb-2 group-hover:text-gradient transition-all">
+                <h3 className="font-display font-bold text-lg sm:text-xl text-foreground mb-2 group-hover:text-gradient transition-all">
                   {feature.title}
                 </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
+                <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </div>
@@ -130,32 +131,32 @@ export default function Index() {
 
           {/* Login Card */}
           <div 
-            className="glass-card glow-border-intense p-10 max-w-md mx-auto text-center opacity-0 animate-scale-in"
+            className="glass-card glow-border-intense p-6 sm:p-10 max-w-sm sm:max-w-md mx-auto text-center opacity-0 animate-scale-in"
             style={{ animationDelay: '0.55s' }}
           >
             <div className="card-shine" />
             
-            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary via-glow-secondary to-glow-accent p-0.5 mx-auto mb-6 animate-pulse-glow">
-              <div className="w-full h-full rounded-3xl bg-card flex items-center justify-center">
-                <Star className="w-10 h-10 text-primary" />
+            <div className="w-16 sm:w-20 h-16 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-primary via-glow-secondary to-glow-accent p-0.5 mx-auto mb-5 sm:mb-6 animate-pulse-glow">
+              <div className="w-full h-full rounded-2xl sm:rounded-3xl bg-card flex items-center justify-center">
+                <Star className="w-8 sm:w-10 h-8 sm:h-10 text-primary" />
               </div>
             </div>
             
             {isLoading ? (
               <div className="text-center py-4">
-                <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                <p className="text-muted-foreground font-medium">Connecting...</p>
+                <div className="w-8 sm:w-10 h-8 sm:h-10 border-2 sm:border-3 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                <p className="text-muted-foreground font-medium text-sm sm:text-base">Connecting...</p>
               </div>
             ) : (
               <>
-                <h2 className="font-display text-2xl font-bold text-foreground mb-2">
+                <h2 className="font-display text-xl sm:text-2xl font-bold text-foreground mb-2">
                   Ready to Start?
                 </h2>
-                <p className="text-muted-foreground text-sm mb-6">
+                <p className="text-muted-foreground text-xs sm:text-sm mb-5 sm:mb-6">
                   Login with Discord to begin earning time
                 </p>
                 <DiscordLoginButton onClick={login} />
-                <p className="text-muted-foreground/60 text-xs mt-5">
+                <p className="text-muted-foreground/60 text-[10px] sm:text-xs mt-4 sm:mt-5">
                   By logging in, you agree to our terms of service
                 </p>
               </>
@@ -164,8 +165,28 @@ export default function Index() {
         </div>
 
         {/* Footer */}
-        <div className="absolute bottom-8 left-0 right-0 text-center opacity-0 animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
-          <p className="text-muted-foreground/60 text-sm font-medium">
+        <div className="absolute bottom-6 left-0 right-0 text-center opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.7s' }}>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 mb-4">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              className="gap-2 text-muted-foreground hover:text-foreground text-xs sm:text-sm"
+              onClick={() => window.open('https://discord.coreapi.online', '_blank')}
+            >
+              <MessageCircle className="w-4 h-4" />
+              Join Discord
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              className="gap-2 text-muted-foreground hover:text-foreground text-xs sm:text-sm"
+              onClick={() => window.open('https://coreapi.online', '_blank')}
+            >
+              <ExternalLink className="w-4 h-4" />
+              Visit Main Site
+            </Button>
+          </div>
+          <p className="text-muted-foreground/60 text-xs sm:text-sm font-medium">
             Powered by <span className="text-gradient font-bold">Core</span>
           </p>
         </div>
