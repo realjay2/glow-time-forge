@@ -131,36 +131,39 @@ export default function Index() {
 
           {/* Login Card */}
           <div 
-            className="glass-card glow-border-intense p-6 sm:p-10 max-w-sm sm:max-w-md mx-auto text-center opacity-0 animate-scale-in"
+            className="glass-card glow-border-intense px-6 sm:px-12 py-5 sm:py-6 max-w-lg sm:max-w-xl mx-auto text-center opacity-0 animate-scale-in"
             style={{ animationDelay: '0.55s' }}
           >
             <div className="card-shine" />
             
-            <div className="w-16 sm:w-20 h-16 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-primary via-glow-secondary to-glow-accent p-0.5 mx-auto mb-5 sm:mb-6 animate-pulse-glow">
-              <div className="w-full h-full rounded-2xl sm:rounded-3xl bg-card flex items-center justify-center">
-                <Star className="w-8 sm:w-10 h-8 sm:h-10 text-primary" />
+            <div className="flex items-center justify-center gap-4 sm:gap-6">
+              <div className="w-12 sm:w-14 h-12 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary via-glow-secondary to-glow-accent p-0.5 animate-pulse-glow shrink-0">
+                <div className="w-full h-full rounded-xl sm:rounded-2xl bg-card flex items-center justify-center">
+                  <Star className="w-6 sm:w-7 h-6 sm:h-7 text-primary" />
+                </div>
               </div>
+              
+              {isLoading ? (
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                  <p className="text-muted-foreground font-medium text-sm">Connecting...</p>
+                </div>
+              ) : (
+                <div className="flex-1 flex flex-col sm:flex-row items-center gap-3 sm:gap-6">
+                  <div className="text-left">
+                    <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">
+                      Ready to Start?
+                    </h2>
+                    <p className="text-muted-foreground text-xs hidden sm:block">
+                      Login with Discord to begin earning
+                    </p>
+                  </div>
+                  <div className="shrink-0">
+                    <DiscordLoginButton onClick={login} />
+                  </div>
+                </div>
+              )}
             </div>
-            
-            {isLoading ? (
-              <div className="text-center py-4">
-                <div className="w-8 sm:w-10 h-8 sm:h-10 border-2 sm:border-3 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                <p className="text-muted-foreground font-medium text-sm sm:text-base">Connecting...</p>
-              </div>
-            ) : (
-              <>
-                <h2 className="font-display text-xl sm:text-2xl font-bold text-foreground mb-2">
-                  Ready to Start?
-                </h2>
-                <p className="text-muted-foreground text-xs sm:text-sm mb-5 sm:mb-6">
-                  Login with Discord to begin earning time
-                </p>
-                <DiscordLoginButton onClick={login} />
-                <p className="text-muted-foreground/60 text-[10px] sm:text-xs mt-4 sm:mt-5">
-                  By logging in, you agree to our terms of service
-                </p>
-              </>
-            )}
           </div>
         </div>
 
