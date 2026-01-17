@@ -176,14 +176,27 @@ export function Dashboard() {
       )}
 
       <div className="min-h-screen bg-grid relative overflow-hidden">
+        {/* Depth vignette overlay */}
+        <div className="depth-vignette" />
+        
         {/* Hero glow */}
         <div className="hero-glow" />
       
-      {/* Background effects - simplified for mobile */}
-      <div className="fixed inset-0 pointer-events-none will-change-transform">
-        <div className="floating-orb w-[500px] h-[500px] top-0 left-1/4 bg-primary/10" />
-        <div className="floating-orb w-[400px] h-[400px] bottom-0 right-1/4 bg-glow-secondary/10 hidden md:block" style={{ animationDelay: '3s' }} />
-      </div>
+        {/* Background depth layers */}
+        <div className="fixed inset-0 pointer-events-none will-change-transform">
+          {/* Far blur layer - bokeh orbs */}
+          <div className="bokeh-orb w-[600px] h-[600px] -top-40 -left-20 depth-blur-far" style={{ animationDelay: '0s' }} />
+          <div className="bokeh-orb w-[400px] h-[400px] top-1/3 -right-20 depth-blur-far hidden md:block" style={{ animationDelay: '2s' }} />
+          <div className="bokeh-orb w-[300px] h-[300px] bottom-20 left-1/4 depth-blur-far" style={{ animationDelay: '4s' }} />
+          
+          {/* Mid blur layer */}
+          <div className="floating-orb w-[350px] h-[350px] top-20 left-1/3 bg-white/5 depth-blur-mid" style={{ animationDelay: '1s' }} />
+          <div className="floating-orb w-[250px] h-[250px] bottom-40 right-1/3 bg-white/5 depth-blur-mid hidden md:block" style={{ animationDelay: '3s' }} />
+          
+          {/* Near layer - subtle particles */}
+          <div className="floating-orb w-[100px] h-[100px] top-40 right-20 bg-white/8 depth-blur-near" style={{ animationDelay: '0.5s' }} />
+          <div className="floating-orb w-[80px] h-[80px] bottom-60 left-20 bg-white/6 depth-blur-near hidden md:block" style={{ animationDelay: '2.5s' }} />
+        </div>
 
       <div className="relative z-10 container mx-auto px-4 py-8 max-w-5xl">
         {/* Header */}

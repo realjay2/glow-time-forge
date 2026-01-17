@@ -167,7 +167,34 @@
   
   .hero-glow {
     @apply absolute inset-0 pointer-events-none;
-    background: radial-gradient(ellipse 80% 50% at 50% -20%, hsl(0 0% 100% / 0.08), transparent);
+    background: radial-gradient(ellipse 80% 50% at 50% -20%, hsl(0 0% 100% / 0.12), transparent);
+  }
+  
+  /* Depth of field blur layers */
+  .depth-blur-far {
+    filter: blur(8px);
+    opacity: 0.4;
+  }
+  
+  .depth-blur-mid {
+    filter: blur(3px);
+    opacity: 0.6;
+  }
+  
+  .depth-blur-near {
+    filter: blur(0px);
+    opacity: 1;
+  }
+  
+  .depth-vignette {
+    @apply absolute inset-0 pointer-events-none;
+    background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 30%, hsl(0 0% 0% / 0.6) 100%);
+  }
+  
+  .bokeh-orb {
+    @apply absolute rounded-full pointer-events-none;
+    background: radial-gradient(circle, hsl(0 0% 100% / 0.15) 0%, transparent 70%);
+    filter: blur(20px);
   }
   
   .card-shine {
