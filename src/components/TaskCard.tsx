@@ -204,9 +204,10 @@ export function TaskCard({ task, onComplete, disabled, index }: TaskCardProps) {
               <Button 
                 onClick={handleStartTask}
                 disabled={disabled}
-                className="gap-3 px-6 py-3 bg-gradient-to-r from-white via-gray-100 to-gray-200 hover:from-gray-100 hover:via-white hover:to-gray-100 text-black font-bold shadow-[0_4px_20px_rgba(255,255,255,0.3),inset_0_1px_0_rgba(255,255,255,0.5)] border border-white/20 transition-all duration-300 hover:shadow-[0_6px_30px_rgba(255,255,255,0.4),inset_0_1px_0_rgba(255,255,255,0.6)] hover:scale-[1.02] active:scale-[0.98]"
+                variant="outline"
+                className="gap-2 w-full sm:w-auto px-8 py-2 h-9 border-white/20 bg-white/5 hover:bg-white/10 text-white/80 hover:text-white font-medium text-sm transition-all duration-300"
               >
-                <ExternalLink className="w-4 h-4" />
+                <ExternalLink className="w-3.5 h-3.5" />
                 Ready to Start
               </Button>
             ) : (
